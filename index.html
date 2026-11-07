@@ -1,0 +1,136 @@
+<title>Plateforme de notation ESG</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Fraunces:opsz,wght@9..144,600&display=swap">
+<style>
+/* Layout: formulaire à gauche (E/S/G), résultat collant à droite, détail du calcul dessous */
+:root{--bg:#f4f6f9;--surf:#fff;--fg:#1b2433;--mut:#5b6678;--line:#d9dfe8;--navy:#12315e;--accent:#2f6fb5;--E:#2e8b57;--S:#c0652a;--G:#6a4fb0;--soft:#eaf0f8;
+--f-disp:"Fraunces",Georgia,serif;--f-body:"IBM Plex Sans",system-ui,sans-serif;--f-mono:"IBM Plex Mono",ui-monospace,monospace}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1520;--surf:#171f2d;--fg:#e6ebf3;--mut:#9aa6ba;--line:#2b3548;--navy:#9ec1ee;--accent:#6aa5e8;--E:#4fb67e;--S:#e08a50;--G:#a08be0;--soft:#1d2940;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0f1520;--surf:#171f2d;--fg:#e6ebf3;--mut:#9aa6ba;--line:#2b3548;--navy:#9ec1ee;--accent:#6aa5e8;--E:#4fb67e;--S:#e08a50;--G:#a08be0;--soft:#1d2940;color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font:15px/1.5 var(--f-body);padding-block:20px 40px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.wrap{max-width:1180px;margin:0 auto}
+h1{font:600 28px/1.15 var(--f-disp);color:var(--navy);margin:0 0 4px;text-wrap:balance}
+.sub{color:var(--mut);margin:0 0 18px;max-width:70ch}
+.top{display:flex;gap:12px;flex-wrap:wrap;align-items:end;background:var(--surf);border:1px solid var(--line);border-radius:6px;padding:12px 14px;margin-bottom:16px}
+label{display:flex;flex-direction:column;gap:3px;font-size:12px;color:var(--mut);min-width:0}
+input,select{font:14px var(--f-mono);color:var(--fg);background:var(--bg);border:1px solid var(--line);border-radius:4px;padding:6px 8px;width:100%;min-width:0}
+select{font-family:var(--f-body)}
+input:focus-visible,select:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.top label{flex:1 1 240px}
+button{font:500 13px var(--f-body);background:var(--navy);color:var(--bg);border:0;border-radius:4px;padding:8px 14px;cursor:pointer}
+button.ghost{background:transparent;color:var(--navy);border:1px solid var(--line)}
+.grid{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:16px;align-items:start}
+@media(max-width:860px){.grid{grid-template-columns:minmax(0,1fr)}}
+.pil{background:var(--surf);border:1px solid var(--line);border-radius:6px;margin-bottom:12px;overflow:hidden}
+.pil h2{margin:0;padding:8px 14px;font:600 14px var(--f-body);color:#fff;display:flex;justify-content:space-between;gap:8px}
+.pil.E h2{background:var(--E)}.pil.S h2{background:var(--S)}.pil.G h2{background:var(--G)}
+.pil h2 span{font-family:var(--f-mono);font-weight:500}
+.fields{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:10px;padding:12px 14px}
+.ext{font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:var(--accent)}
+.res{position:sticky;top:12px;background:var(--surf);border:1px solid var(--line);border-radius:6px;padding:16px}
+@media(max-width:860px){.res{position:static}}
+.big{font:600 64px/1 var(--f-disp);color:var(--navy);font-variant-numeric:tabular-nums}
+.big small{font:400 16px var(--f-body);color:var(--mut)}
+.bars{display:grid;gap:10px;margin:14px 0}
+.bar{display:grid;grid-template-columns:22px 1fr 44px;gap:8px;align-items:center;font-size:13px}
+.track{height:10px;background:var(--soft);border-radius:2px;overflow:hidden}
+.fill{height:100%}
+.bar b{font-family:var(--f-mono);font-weight:500;text-align:right;font-variant-numeric:tabular-nums}
+.cmp{border-top:1px solid var(--line);padding-top:10px;margin-top:6px;font-size:13px;color:var(--mut);display:grid;gap:3px}
+.cmp b{color:var(--fg);font-family:var(--f-mono);font-weight:500}
+.formula{font:12px/1.5 var(--f-mono);background:var(--soft);border-radius:4px;padding:8px 10px;margin-top:12px;overflow-x:auto}
+.det{margin-top:16px;background:var(--surf);border:1px solid var(--line);border-radius:6px}
+.det h2{font:600 16px var(--f-body);margin:0;padding:12px 14px;border-bottom:1px solid var(--line)}
+.tw{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:13px}
+th,td{text-align:left;padding:6px 14px;border-bottom:1px solid var(--line);white-space:nowrap}
+th{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--mut);font-weight:500}
+td.n{font-family:var(--f-mono);text-align:right;font-variant-numeric:tabular-nums}
+.tag{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:8px}
+.note{font-size:12px;color:var(--mut);margin:12px 0 0;max-width:80ch}
+</style>
+<div class="wrap">
+<h1>Plateforme de notation ESG</h1>
+<p class="sub">Choisis une entreprise du panel ou saisis ses données : la note E, S, G et la note finale sur 100 se calculent avec les mêmes règles que l'Excel.</p>
+<div class="top">
+<label>Entreprise du panel<select id="firm"></select></label>
+<label>Groupe sectoriel LSEG<select id="grp"></select></label>
+<button id="clr" class="ghost" type="button">Vider le formulaire</button>
+</div>
+<div class="grid"><div id="form"></div>
+<aside class="res" aria-live="polite">
+<div class="big"><span id="fin">–</span> <small>/ 100</small></div>
+<div class="bars" id="bars"></div>
+<div class="formula" id="fml"></div>
+<div class="cmp" id="cmp"></div>
+</aside></div>
+<section class="det"><h2>Détail du calcul</h2><div class="tw"><table><thead><tr><th>Variable</th><th>Valeur utilisée</th><th>Règle</th><th style="text-align:right">Note /100</th></tr></thead><tbody id="rows"></tbody></table></div></section>
+<p class="note">Variables de base vides : note 0. Variables d'extension vides : ignorées dans la moyenne du pilier. Bornes P5–P95 calculées sur les entreprises déjà saisies ; elles seront recalculées sur les 72 entreprises une fois le panel complet. Note LSEG sur 100 = note sur 5 × 20.</p>
+</div>
+<script>
+const D={"firms": [{"name": "Airbus", "group": "Manufacturing machinery & heavy equipment", "ca": 73420, "s1": 480000, "s2": 342000, "en": 3889989, "ren": 1261478, "obj": 1, "sbti": 1, "eau": 3521940, "dech": 388132, "fem": 0.21, "form": 15.4, "turn": 0.045, "acc": 1.62, "dhp": 1, "dhs": 1, "dhr": 1, "ind": 0.92, "fc": 0.42, "pres": 1, "e1": 1, "e2": 1, "e3": 1, "ua": 1, "el": 0, "ratio": 69, "lseg": 4, "sp": 64}, {"name": "Safran", "group": "Manufacturing machinery & heavy equipment", "ca": 31329, "s1": 171781, "s2": 279236, "en": 2179183, "ren": 668765, "obj": 1, "sbti": 1, "eau": 3936986, "dech": 93229, "fem": 0.3, "form": 31, "turn": 0.106, "acc": 1.9, "dhp": 1, "dhs": 1, "dhr": 1, "ind": 0.583, "fc": 0.5, "pres": 1, "e1": 1, "e2": 1, "e3": 1, "ua": 0, "el": 0, "ratio": 37.9, "lseg": 2.9, "sp": 47}, {"name": "Thales", "group": "Manufacturing machinery & heavy equipment", "ca": 22136, "s1": 46000, "s2": 119000, "en": 864006, "ren": 714881, "obj": 1, "sbti": 1, "eau": null, "dech": null, "fem": 0.276, "form": 17.5, "turn": 0.078, "acc": 1.49, "dhp": 1, "dhs": 1, "dhr": 1, "ind": 0.31, "fc": 0.5, "pres": 0, "e1": 1, "e2": 1, "e3": 1, "ua": 0, "el": 0, "ratio": 50, "lseg": 3.3, "sp": 66}, {"name": "Dassault Aviation", "group": "Manufacturing machinery & heavy equipment", "ca": 7426, "s1": 47938, "s2": 21226, "en": 365351, "ren": 47042, "obj": 0, "sbti": 0, "eau": null, "dech": null, "fem": 0.194, "form": null, "turn": 0.091, "acc": null, "dhp": 1, "dhs": 1, "dhr": 1, "ind": 0.429, "fc": 0.429, "pres": 0, "e1": 1, "e2": 1, "e3": 1, "ua": 0, "el": 0, "ratio": 118.1, "lseg": 2.8, "sp": 29}, {"name": "Schneider Electric", "group": "Manufacturing machinery & heavy equipment", "ca": 40152, "s1": 100309, "s2": 409343, "en": 1429442, "ren": 920553, "obj": 1, "sbti": 1, "eau": 1944796, "dech": null, "fem": 0.342, "form": 23, "turn": 0.139, "acc": 0.26, "dhp": 1, "dhs": 1, "dhr": 1, "ind": 0.92, "fc": 0.46, "pres": 1, "e1": 1, "e2": 1, "e3": 1, "ua": 0, "el": 0, "ratio": 59, "lseg": 4.4, "sp": 84}, {"name": "Legrand", "group": "Manufacturing machinery & heavy equipment", "ca": 9480.6, "s1": 45072, "s2": 77142, "en": 471656, "ren": 250429, "obj": 1, "sbti": 1, "eau": null, "dech": null, "fem": 0.36, "form": 22, "turn": 0.17, "acc": 1.84, "dhp": 1, "dhs": 1, "dhr": 1, "ind": 0.82, "fc": 0.55, "pres": 1, "e1": 1, "e2": 1, "e3": 1, "ua": 1, "el": 0, "ratio": 41.9, "lseg": 3.5, "sp": 69}, {"name": "Alstom", "group": "Manufacturing machinery & heavy equipment", "ca": 19171, "s1": 94245, "s2": 125326, "en": 944575, "ren": 386464, "obj": 1, "sbti": 1, "eau": 1529000, "dech": 82371, "fem": 0.218, "form": 22.1, "turn": 0.108, "acc": 0.7, "dhp": 1, "dhs": 1, "dhr": 1, "ind": 0.89, "fc": 0.56, "pres": 1, "e1": 1, "e2": 1, "e3": 1, "ua": 1, "el": 0, "ratio": 75, "lseg": 4.1, "sp": 54}, {"name": "Nexans", "group": "Manufacturing machinery & heavy equipment", "ca": 7810, "s1": 111701, "s2": 115458, "en": 1112364, "ren": 441952, "obj": 1, "sbti": 1, "eau": 1227330, "dech": 67709, "fem": 0.384, "form": 17, "turn": 0.195, "acc": 2.67, "dhp": 1, "dhs": 1, "dhr": 1, "ind": 0.6, "fc": 0.455, "pres": 1, "e1": 1, "e2": 1, "e3": 1, "ua": 1, "el": 0, "ratio": 53, "lseg": 2.7, "sp": 59}, {"name": "STMicroelectronics", "group": "Manufacturing machinery & heavy equipment", "ca": 11800, "s1": 471546, "s2": 818642, "en": 3520297, "ren": 2675302, "obj": 1, "sbti": 1, "eau": 5051321, "dech": 74740, "fem": 0.344, "form": null, "turn": 0.06, "acc": null, "dhp": 1, "dhs": 1, "dhr": 1, "ind": 0.556, "fc": 0.333, "pres": 1, "e1": 1, "e2": 1, "e3": 1, "ua": null, "el": 0, "ratio": null, "lseg": 3.9, "sp": 48}, {"name": "Dassault Systèmes", "group": "Manufacturing machinery & heavy equipment", "ca": 6235.8, "s1": 3110, "s2": 19820, "en": 72300, "ren": 61166, "obj": 1, "sbti": 1, "eau": null, "dech": null, "fem": 0.298, "form": 28.7, "turn": 0.084, "acc": null, "dhp": 1, "dhs": 1, "dhr": 1, "ind": 0.5, "fc": 0.5, "pres": 0, "e1": 1, "e2": 1, "e3": 1, "ua": 0, "el": null, "ratio": 152.6, "lseg": 3.2, "sp": 69}, {"name": "Air Liquide", "group": "Heavy industry", "ca": 26940, "s1": 14590000, "s2": 19599000, "en": 67674517, "ren": 9503024, "obj": 1, "sbti": 1, "eau": 83562343, "dech": null, "fem": 0.293, "form": 19.3, "turn": 0.135, "acc": 0.4, "dhp": 1, "dhs": 1, "dhr": 1, "ind": 0.83, "fc": 0.42, "pres": 1, "e1": 1, "e2": 1, "e3": 1, "ua": 1, "el": 0, "ratio": 46, "lseg": null, "sp": 59}, {"name": "Arkema", "group": "Heavy industry", "ca": 9068, "s1": 1261000, "s2": 950000, "en": 6530000, "ren": 1200000, "obj": 1, "sbti": 1, "eau": 79000000, "dech": 384800, "fem": 0.276, "form": 19, "turn": 0.13, "acc": 0.4, "dhp": 1, "dhs": 1, "dhr": 1, "ind": 0.73, "fc": 0.45, "pres": 0, "e1": 1, "e2": 1, "e3": 1, "ua": 0, "el": 0, "ratio": null, "lseg": null, "sp": null}, {"name": "Engie", "group": "Heavy industry", "ca": 71944, "s1": 22200000, "s2": 500000, "en": 172257000, "ren": 10396000, "obj": 1, "sbti": 1, "eau": "NP", "dech": "NP", "fem": 0.27, "form": 20, "turn": 0.091, "acc": 2, "dhp": 1, "dhs": 1, "dhr": 1, "ind": 0.6, "fc": 0.45, "pres": 1, "e1": 1, "e2": 1, "e3": 1, "ua": "NP", "el": "NP", "ratio": 74.7, "lseg": 3.7, "sp": null}, {"name": "Veolia", "group": "Heavy industry", "ca": 44396, "s1": 18200000, "s2": 1753000, "en": 71585939, "ren": 20275187, "obj": 1, "sbti": 1, "eau": 24200000, "dech": null, "fem": 0.231, "form": 31, "turn": 0.134, "acc": 4.11, "dhp": 1, "dhs": 1, "dhr": 1, "ind": 0.75, "fc": 0.5, "pres": 1, "e1": 1, "e2": 1, "e3": 1, "ua": null, "el": 0, "ratio": null, "lseg": 3.8, "sp": null}, {"name": "Technip Energies", "group": "Heavy industry", "ca": 7203.8, "s1": 2234, "s2": 12592, "en": 51788, "ren": 20629, "obj": 1, "sbti": null, "eau": 202044, "dech": 1942, "fem": 0.3059, "form": 28, "turn": 0.118, "acc": 0.11, "dhp": 1, "dhs": 1, "dhr": 1, "ind": 0.9, "fc": 0.4, "pres": 1, "e1": 1, "e2": 1, "e3": 1, "ua": 1, "el": 1, "ratio": 80, "lseg": 3.7, "sp": null}, {"name": "Vinci", "group": "Heavy industry", "ca": 74599, "s1": 1985000, "s2": 257000, "en": 10559000, "ren": 1229000, "obj": 1, "sbti": 1, "eau": 24213000, "dech": null, "fem": 0.175, "form": 24, "turn": 0.23, "acc": 5.7, "dhp": 1, "dhs": 1, "dhr": 1, "ind": 0.75, "fc": 0.46, "pres": 1, "e1": 1, "e2": 1, "e3": 1, "ua": null, "el": 0, "ratio": null, "lseg": 3.1, "sp": null}, {"name": "Bouygues", "group": "Heavy industry", "ca": 56877, "s1": 1725522, "s2": 193910, "en": 9919368, "ren": 1666417, "obj": 1, "sbti": 1, "eau": null, "dech": null, "fem": 0.19, "form": null, "turn": 0.142, "acc": 3.75, "dhp": 1, "dhs": 1, "dhr": 1, "ind": 0.5, "fc": 0.58, "pres": 1, "e1": 1, "e2": 1, "e3": 1, "ua": 0, "el": 0, "ratio": null, "lseg": 3, "sp": null}, {"name": "Eiffage", "group": "Heavy industry", "ca": 25313, "s1": 698274, "s2": 39257, "en": 2920419, "ren": 282682, "obj": 1, "sbti": 1, "eau": "NP", "dech": 8005034, "fem": 0.1527, "form": 19.8, "turn": 0.099, "acc": 4.51, "dhp": 1, "dhs": 1, "dhr": 1, "ind": 0.83, "fc": 0.6667, "pres": 0, "e1": 1, "e2": 1, "e3": 1, "ua": 0, "el": 0, "ratio": 87, "lseg": 3.1, "sp": null}, {"name": "Saint-Gobain", "group": "Heavy industry", "ca": 46483, "s1": 7907492, "s2": 2710572, "en": 42127447, "ren": 7704335, "obj": 1, "sbti": 1, "eau": 41635408, "dech": 1457863, "fem": 0.245, "form": 17.5, "turn": 0.166, "acc": 0.9, "dhp": 1, "dhs": 1, "dhr": 1, "ind": 0.91, "fc": 0.5, "pres": 0, "e1": 1, "e2": 1, "e3": 1, "ua": 1, "el": null, "ratio": "NP", "lseg": 3.6, "sp": null}, {"name": "LVMH", "group": "Manufacturing household goods", "ca": 80807, "s1": 163507, "s2": 358551, "en": 1795225, "ren": 1317242, "obj": 1, "sbti": 1, "eau": 8109787, "dech": 129005, "fem": 0.714, "form": 16.1, "turn": 0.188, "acc": 4.4, "dhp": 1, "dhs": 1, "dhr": 1, "ind": 0.64, "fc": 0.5, "pres": 0, "e1": 1, "e2": 1, "e3": 1, "ua": 0, "el": 0, "ratio": 3.18, "lseg": 3.1, "sp": null}, {"name": "Kering", "group": "Manufacturing household goods", "ca": 14675, "s1": 31534, "s2": 115225, "en": 417001, "ren": 315192, "obj": 1, "sbti": 1, "eau": 787014, "dech": 19867, "fem": 0.63, "form": 13.7, "turn": 0.211, "acc": 3.67, "dhp": 1, "dhs": 1, "dhr": 1, "ind": 0.58, "fc": 0.5, "pres": 1, "e1": 1, "e2": 1, "e3": 1, "ua": 0, "el": 0, "ratio": 255.7, "lseg": 3.5, "sp": null}, {"name": "Hermès", "group": "Manufacturing household goods", "ca": 16002, "s1": 19104, "s2": 37374, "en": 242410, "ren": 185916, "obj": 1, "sbti": 1, "eau": 6193900, "dech": 22284, "fem": 0.68, "form": "NP", "turn": 0.06, "acc": 6.18, "dhp": 1, "dhs": 1, "dhr": 1, "ind": 0.3846, "fc": 0.46, "pres": 1, "e1": 1, "e2": 1, "e3": 1, "ua": 0, "el": 0, "ratio": 66, "lseg": 3, "sp": null}, {"name": "L'Oréal", "group": "Manufacturing household goods", "ca": 44052, "s1": 42428, "s2": 171924, "en": 1006756, "ren": 963899, "obj": 1, "sbti": 1, "eau": null, "dech": 155655, "fem": "NP", "form": 31.6, "turn": 0.135, "acc": 0.67, "dhp": 1, "dhs": 1, "dhr": 1, "ind": 0.53, "fc": 0.4, "pres": 1, "e1": 1, "e2": 1, "e3": 1, "ua": 1, "el": 0, "ratio": "NP", "lseg": 4, "sp": null}, {"name": "SEB", "group": "Manufacturing household goods", "ca": 8169, "s1": 54982, "s2": 144913, "en": 648604, "ren": 141616, "obj": 1, "sbti": 1, "eau": 2301000, "dech": 57847, "fem": null, "form": null, "turn": null, "acc": 0.76, "dhp": 1, "dhs": 1, "dhr": 1, "ind": 0.3333, "fc": 0.5, "pres": 1, "e1": 1, "e2": 1, "e3": 1, "ua": 0, "el": 0, "ratio": 63.9, "lseg": 3.4, "sp": null}, {"name": "Accor", "group": "Retail & consumer services", "ca": 5639, "s1": 690000, "s2": 2714000, "en": 13959270, "ren": 379090, "obj": 1, "sbti": 1, "eau": 73000000, "dech": 410097, "fem": 0.407, "form": null, "turn": 0.286, "acc": 20.1, "dhp": 1, "dhs": 1, "dhr": 1, "ind": 0.46, "fc": 0.69, "pres": 0, "e1": 1, "e2": 1, "e3": 1, "ua": 0, "el": 0, "ratio": 65, "lseg": null, "sp": null}], "bor": {"carbone": [3.55897795562046, 572.808980249191], "energie": [12.3052201583625, 2459.25354728522], "formation": [15.23, 31.06], "turnover": [0.06, 0.22715], "accidents": [0.267, 6.156], "eau": [43.9851832368898, 9558.67484411488], "dechets": [1.02853326767299, 145.780193008537], "ratio": [32.692, 168.065]}, "w": {"Manufacturing machinery & heavy equipment": [35.0, 31.9, 33.1], "Heavy industry": [38.1, 30.7, 31.1], "Manufacturing household goods": [34.2, 35.8, 30.0], "Food & beverage": [38.8, 31.9, 29.3], "Retail & consumer services": [27.8, 39.3, 33.0], "Basic resources": [36.1, 28.2, 35.6], "Healthcare": [21.0, 37.1, 41.8], "Consulting & business services": [18.6, 32.1, 49.4], "Transport & logistics": [30.8, 38.1, 31.1], "Media & communication": [19.7, 30.4, 49.9], "Real estate": [39.2, 25.1, 35.7]}};
+const F=D.firms,B=D.bor,W=D.w;
+const $=id=>document.getElementById(id);
+const fld=(id,l,t,ext,opts)=>({id,l,t,ext,opts});
+const SECT=[
+['E','Environnement',[fld('ca','Chiffre d\'affaires (M€)'),fld('s1','Scope 1 (tCO2e)'),fld('s2','Scope 2 (tCO2e)'),fld('en','Énergie totale (MWh)'),fld('ren','Énergie renouvelable (MWh)'),fld('obj','Objectif chiffré de réduction','s',0,['Oui','Non']),fld('eau','Eau prélevée (m³)',0,1),fld('dech','Déchets (tonnes)',0,1)]],
+['S','Social',[fld('fem','% femmes dans les effectifs'),fld('form','Formation (h/salarié)'),fld('turn','Turnover (%)'),fld('acc','Taux de fréquence des accidents'),fld('dhp','Droits humains : politique','s',1,['Oui','Non']),fld('dhs','Droits humains : suivi','s',1,['Oui','Non']),fld('dhr','Droits humains : remédiation','s',1,['Oui','Non'])]],
+['G','Gouvernance',[fld('ind','% administrateurs indépendants'),fld('fc','% femmes au conseil'),fld('pres','Présidence dissociée du DG','s',0,['Oui','Non']),fld('e1','Éthique : anticorruption','s',0,['Oui','Non']),fld('e2','Éthique : alerte','s',0,['Oui','Non']),fld('e3','Éthique : code de conduite','s',0,['Oui','Non']),fld('ua','Une action = une voix','s',1,['Oui','Non']),fld('el','Élection annuelle des administrateurs','s',1,['Oui','Non']),fld('ratio','Ratio rémunération dirigeant / médiane',0,1)]]];
+const PCT={fem:1,turn:1,ind:1,fc:1};
+function build(){let h='';SECT.forEach(([k,n,fs])=>{h+=`<div class="pil ${k}"><h2>${n}<span id="p${k}">–</span></h2><div class="fields">`;fs.forEach(f=>{h+=`<label for="i_${f.id}">${f.l}${f.ext?' <span class="ext">extension</span>':''}`;
+if(f.t==='s')h+=`<select id="i_${f.id}"><option value="">(vide)</option><option value="1">Oui</option><option value="0">Non</option></select>`;else h+=`<input id="i_${f.id}" inputmode="decimal" autocomplete="off">`;h+='</label>'});h+='</div></div>'});$('form').innerHTML=h;
+$('firm').innerHTML='<option value="">— Saisie libre —</option>'+F.map((f,i)=>`<option value="${i}">${f.name}</option>`).join('');
+$('grp').innerHTML=Object.keys(W).map(g=>`<option>${g}</option>`).join('');
+document.querySelectorAll('input,select').forEach(e=>e.addEventListener('input',e.id==='firm'?load:calc))}
+function ids(){return SECT.flatMap(s=>s[2].map(f=>f.id))}
+function load(){const f=F[$('firm').value];ids().forEach(i=>{const e=$('i_'+i);let v=f?f[i]:null;if(v==null)e.value='';else e.value=PCT[i]?+(v*100).toFixed(3):v});if(f&&W[f.group])$('grp').value=f.group;calc()}
+$('clr')||0;
+function num(i){const s=$('i_'+i).value.replace(',','.').trim();if(s===''||isNaN(+s))return null;return PCT[i]?+s/100:+s}
+function lin(v,[lo,hi],inv){const x=inv?(hi-v)/(hi-lo):(v-lo)/(hi-lo);return Math.max(0,Math.min(100,100*x))}
+const fm=(x,d=2)=>x==null?'vide':(Math.abs(x)>=1000?x.toLocaleString('fr-FR',{maximumFractionDigits:0}):(+x.toFixed(d)).toLocaleString('fr-FR'));
+function calc(){
+const v={};ids().forEach(i=>v[i]=num(i));
+const R=[];// [pilier, nom, valeur, regle, note|null, ext]
+const add=(p,n,val,reg,sc,ext)=>R.push([p,n,val,reg,sc,ext]);
+const ok=x=>x!=null;
+const carb=ok(v.ca)&&ok(v.s1)&&ok(v.s2)?(v.s1+v.s2)/v.ca:null;
+const ene=ok(v.ca)&&ok(v.en)?v.en/v.ca:null;
+const ren=ok(v.en)&&ok(v.ren)&&v.en>0?v.ren/v.en:null;
+add('E','Intensité carbone',carb==null?null:fm(carb)+' tCO2e/M€','P5–P95, moins = mieux',carb==null?0:lin(carb,B.carbone,1));
+add('E','Intensité énergétique',ene==null?null:fm(ene)+' MWh/M€','P5–P95, moins = mieux',ene==null?0:lin(ene,B.energie,1));
+add('E','% énergie renouvelable',ren==null?null:fm(ren*100,1)+' %','0 % = 0, 100 % = 100',ren==null?0:Math.max(0,Math.min(100,ren*100)));
+add('E','Objectif chiffré de réduction',ok(v.obj)?(v.obj?'Oui':'Non'):null,'Oui = 100, non = 0',ok(v.obj)?v.obj*100:0);
+const eau=ok(v.ca)&&ok(v.eau)?v.eau/v.ca:null,dec=ok(v.ca)&&ok(v.dech)?v.dech/v.ca:null;
+add('E','Eau / CA',eau==null?null:fm(eau)+' m³/M€','P5–P95, moins = mieux',eau==null?null:lin(eau,B.eau,1),1);
+add('E','Déchets / CA',dec==null?null:fm(dec)+' t/M€','P5–P95, moins = mieux',dec==null?null:lin(dec,B.dechets,1),1);
+add('S','% femmes dans les effectifs',ok(v.fem)?fm(v.fem*100,1)+' %':null,'50 % = 100',ok(v.fem)?Math.min(1,v.fem/.5)*100:0);
+add('S','Formation',ok(v.form)?fm(v.form,1)+' h':null,'P5–P95, plus = mieux',ok(v.form)?lin(v.form,B.formation,0):0);
+add('S','Turnover',ok(v.turn)?fm(v.turn*100,1)+' %':null,'P5–P95, moins = mieux',ok(v.turn)?lin(v.turn,B.turnover,1):0);
+add('S','Accidents (TF)',ok(v.acc)?fm(v.acc):null,'P5–P95, moins = mieux',ok(v.acc)?lin(v.acc,B.accidents,1):0);
+const dh=[v.dhp,v.dhs,v.dhr].filter(ok);
+add('S','Droits humains',dh.length?dh.reduce((a,b)=>a+b,0)+' / 3':null,'score ÷ 3 × 100',dh.length?dh.reduce((a,b)=>a+b,0)/3*100:null,1);
+add('G','% administrateurs indépendants',ok(v.ind)?fm(v.ind*100,1)+' %':null,'50 % = 100',ok(v.ind)?Math.min(1,v.ind/.5)*100:0);
+add('G','% femmes au conseil',ok(v.fc)?fm(v.fc*100,1)+' %':null,'40 % = 100',ok(v.fc)?Math.min(1,v.fc/.4)*100:0);
+add('G','Présidence dissociée',ok(v.pres)?(v.pres?'Oui':'Non'):null,'Oui = 100, non = 0',ok(v.pres)?v.pres*100:0);
+const et=[v.e1,v.e2,v.e3].map(x=>ok(x)?x:0).reduce((a,b)=>a+b,0);
+add('G','Éthique des affaires',et+' / 3','score ÷ 3 × 100',et/3*100);
+const ac=[v.ua,v.el].filter(ok);
+add('G','Droits des actionnaires',ac.length?ac.reduce((a,b)=>a+b,0)+' / 2':null,'score ÷ 2 × 100',ac.length?ac.reduce((a,b)=>a+b,0)/2*100:null,1);
+add('G','Ratio de rémunération',ok(v.ratio)?fm(v.ratio,1):null,'P5–P95, moins = mieux',ok(v.ratio)?lin(v.ratio,B.ratio,1):null,1);
+const col={E:'var(--E)',S:'var(--S)',G:'var(--G)'};
+$('rows').innerHTML=R.map(r=>`<tr><td><span class="tag" style="background:${col[r[0]]}"></span>${r[1]}${r[5]?' <span class="ext">ext.</span>':''}</td><td>${r[2]==null?'—':r[2]}</td><td>${r[3]}</td><td class="n">${r[4]==null?'ignorée':r[4].toFixed(1)}</td></tr>`).join('');
+const P={};['E','S','G'].forEach(k=>{const s=R.filter(r=>r[0]===k&&r[4]!=null).map(r=>r[4]);P[k]=s.reduce((a,b)=>a+b,0)/s.length;$('p'+k).textContent=P[k].toFixed(1)});
+const w=W[$('grp').value]||[0,0,0];
+const fin=(P.E*w[0]+P.S*w[1]+P.G*w[2])/100;
+const any=ids().some(i=>v[i]!=null);
+$('fin').textContent=any?fin.toFixed(1):'–';
+$('bars').innerHTML=[['E','Environnement',0],['S','Social',1],['G','Gouvernance',2]].map(([k,n,j])=>`<div class="bar" title="${n}"><span style="color:${col[k]};font-weight:600">${k}</span><div><div class="track"><div class="fill" style="width:${P[k]}%;background:${col[k]}"></div></div><div style="font-size:11px;color:var(--mut);margin-top:2px">poids ${w[j].toFixed(1)} %</div></div><b>${P[k].toFixed(1)}</b></div>`).join('');
+$('fml').textContent=`${P.E.toFixed(1)}×${w[0].toFixed(1)}% + ${P.S.toFixed(1)}×${w[1].toFixed(1)}% + ${P.G.toFixed(1)}×${w[2].toFixed(1)}% = ${fin.toFixed(1)}`;
+const f=F[$('firm').value];
+$('cmp').innerHTML=f&&(f.lseg!=null||f.sp!=null)?`<div>Note LSEG (×20) <b>${f.lseg!=null?f.lseg*20:'non diffusée'}</b></div><div>Note S&amp;P CSA <b>${f.sp!=null?f.sp:'non diffusée'}</b></div>`:'';
+}
+build();$('grp').addEventListener('input',calc);$('firm').addEventListener('input',load);
+$('clr').onclick=()=>{$('firm').value='';ids().forEach(i=>$('i_'+i).value='');calc()};
+$('firm').value='0';load();
+</script>
